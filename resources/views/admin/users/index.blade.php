@@ -97,9 +97,9 @@
                             var btns = '';
                                 btns += '<div class="action-btn">';
 
-                                btns += '<a href="' + SITEURL + '/dashboard/users/' + data + '/edit" title="Edit" class="btn btn-edit"><i class="ri-edit-line"></i></a>';
+                                btns += '<a href="' + SITEURL + '/admin/users/' + data + '/edit" title="Edit" class="btn btn-edit"><i class="ri-edit-line"></i></a>';
 
-                                btns += '<form action="' + SITEURL + '/dashboard/users/' + data + '" method="POST" style="display: inline;" onsubmit="return confirm(\'Are you sure to delete this user?\');">' +
+                                btns += '<form action="' + SITEURL + '/admin/users/' + data + '" method="POST" style="display: inline;" onsubmit="return confirm(\'Are you sure to delete this user?\');">' +
                                     '@csrf' +
                                     '@method("DELETE")' +
                                     '<button type="submit" class="btn btn-delete"><i class="ri-delete-bin-2-line"></i></button>' +

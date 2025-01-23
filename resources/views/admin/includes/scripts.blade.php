@@ -41,7 +41,7 @@
     });
     $(document).ready(function() {
         $('.multiple-select2').select2({
-            placeholder: "Select teachers from here",
+            placeholder: "Select Correct Answer",
             allowClear: true
         });
     });

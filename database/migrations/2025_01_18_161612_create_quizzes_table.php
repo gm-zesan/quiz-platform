@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->integer('timer')->nullable();
-            $table->integer('total_question')->default(0);
+            $table->integer('total_question');
             $table->timestamps();
         });
     }

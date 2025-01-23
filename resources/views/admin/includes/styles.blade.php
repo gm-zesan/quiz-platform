@@ -25,7 +25,7 @@
         width: 100% !important; */
     }
     .select2-selection{
-        height: 26px !important;
+        height: 32px !important;
         border-radius: 4px !important;
         border: 1px solid #ced4da !important;
         margin-bottom: 10px;
@@ -53,7 +53,7 @@
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered{
         font-size: 12px;
-        line-height: 25px;
+        line-height: 30px;
         z-index: 1062;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered:focus-visible{

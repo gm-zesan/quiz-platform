@@ -35,13 +35,13 @@
                         <table class="table dataTable w-100" id="data-table" style="min-width: 800px;">
                             <thead>
                                 <tr>
-                                    <th scope="col">SL NO</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Start Time</th>
-                                    <th scope="col">End Time</th>
-                                    <th scope="col">Created By</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col" style="width: 5%">SL NO</th>
+                                    <th scope="col" style="width: 10%">Title</th>
+                                    <th scope="col" style="width: 50%">Description</th>
+                                    <th scope="col" style="width: 10%">Start Time</th>
+                                    <th scope="col" style="width: 10%">End Time</th>
+                                    <th scope="col" style="width: 10%">Created By</th>
+                                    <th scope="col" style="width: 5%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,12 +86,9 @@
                         orderable: false,
                         render: function(data) {
                             var btns = '<div class="action-btn">';
-                            btns += '<form action="' + SITEURL + '/admin/quizzes/' + data +
-                                '" method="POST" style="display: inline;">' +
-                                '@csrf' +
-                                '@method('PUT')' +
-                                '<button type="submit" class="btn btn-edit" title="update status"><i class="ri-loop-right-line"></i></button>' +
-                                '</form>';
+
+                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/edit" title="Edit" class="btn btn-edit"><i class="ri-edit-line"></i></a>';
+
                             btns += '<form action="' + SITEURL + '/admin/quizzes/' + data +
                                 '" method="POST" style="display: inline;" onsubmit="return confirm(\'Are you sure to delete this review?\');">' +
                                 '@csrf' +

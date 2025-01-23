@@ -35,6 +35,12 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'user-create', 'display_name' => 'User create', 'module' => 'user'],
             ['name' => 'user-edit', 'display_name' => 'User edit', 'module' => 'user'],
             ['name' => 'user-delete', 'display_name' => 'User delete', 'module' => 'user'],
+
+            // quiz
+            ['name' => 'quiz-list', 'display_name' => 'Quiz list', 'module' => 'quiz'],
+            ['name' => 'quiz-create', 'display_name' => 'Quiz create', 'module' => 'quiz'],
+            ['name' => 'quiz-edit', 'display_name' => 'Quiz edit', 'module' => 'quiz'],
+            ['name' => 'quiz-delete', 'display_name' => 'Quiz delete', 'module' => 'quiz'],
         ];
 
         foreach ($permissions as $permission) {

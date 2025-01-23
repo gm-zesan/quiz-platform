@@ -3,13 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\QuizRequest;
 use App\Models\Quiz;
-use Illuminate\Container\Attributes\Auth;
+use App\Services\QuizService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
 class QuizController extends Controller
 {
+    protected $quizService;
+
+    public function __construct(QuizService $quizService)
+    {
+        $this->quizService = $quizService;
+    }
+    
     /**
      * Display a listing of the resource.
      */
@@ -19,6 +27,12 @@ class QuizController extends Controller
             $quizzes = Quiz::get();
             return DataTables::of($quizzes)
                 ->addIndexColumn()
+                ->addColumn('start_time', function (Quiz $quiz) {
+                    return $quiz->start_time->format('d F Y \a\t h:i A');
+                })
+                ->addColumn('end_time', function (Quiz $quiz) {
+                    return $quiz->end_time->format('d F Y \a\t h:i A');
+                })
                 ->addColumn('user_id', function (Quiz $quiz) {
                     return $quiz->user->name;
                 })
@@ -43,9 +57,10 @@ class QuizController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(QuizRequest $request)
     {
-        dd($request->all());
+        $this->quizService->storeQuiz($request->validated());
+        return redirect()->route('admin.quizzes.index')->with('success', 'Quiz created successfully!');
     }
 
 
@@ -74,12 +89,43 @@ class QuizController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
+            'description' => 'required|string',
+            'start_time' => 'required|date|before:end_time',
             'end_time' => 'required|date|after:start_time',
+            'timer' => 'required|integer|min:1',
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.question_difficulty' => 'required|string',
+            'questions.*.marks' => 'required|integer|min:1',
+            'questions.*.options' => 'nullable|array|required_if:questions.*.type,radio,checkbox',
+            'questions.*.options.*.id' => 'nullable|integer|exists:options,id',
+            'questions.*.options.*.option' => 'nullable|string',
+            'questions.*.options.*.is_correct' => 'nullable',
         ]);
+        $quizData = $request->only(['title', 'description', 'start_time', 'end_time', 'timer']);
+        $quiz->update($quizData);
 
-        $quiz->update($validated);
+        foreach ($validated['questions'] as $index => $questionData) {
+            $question = $quiz->questions[$index];
+    
+            $question->question = $questionData['question'];
+            $question->question_difficulty = $questionData['question_difficulty'];
+            $question->marks = $questionData['marks'];
+    
+            if (in_array($question->type->value, ['radio', 'checkbox'])) {
+                foreach ($questionData['options'] as $optionData) {
+                    $isCorrect = isset($optionData['is_correct']) && $optionData['is_correct'] === 'on' ? 1 : 0;
+                    $option = $question->options->find($optionData['id']);
+                    if ($option) {
+                        $option->update([
+                            'option' => $optionData['option'],
+                            'is_correct' => $isCorrect,
+                        ]);
+                    }
+                }
+            }
+            $question->save();
+        }
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz updated successfully!');
     }
@@ -89,6 +135,10 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
+        $quiz->questions()->each(function ($question) {
+            $question->options()->delete();
+        });
+        $quiz->questions()->delete();
         $quiz->delete();
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz deleted successfully!');
     }

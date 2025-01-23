@@ -843,6 +843,22 @@ header {
                 border: 1px solid #ced4da;
                 border-radius: 5px;
                 padding: 4px 10px;
+                height: 32px;
+                font-size: 12px;
+                font-weight: 500;
+                color: #1d1b31;
+                margin-bottom: 10px;
+                transition: all 0.3s ease;
+                &:focus {
+                    border-color: #845adf;
+                    box-shadow: none;
+                    outline: none;
+                }
+            }
+            .custom-textarea{
+                border: 1px solid #ced4da;
+                border-radius: 5px;
+                padding: 4px 10px;
                 font-size: 12px;
                 font-weight: 500;
                 color: #1d1b31;
