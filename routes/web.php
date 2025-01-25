@@ -10,15 +10,17 @@ use App\Http\Controllers\User\QuestionController;
 use App\Http\Controllers\User\QuizController as UserQuizController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\QuizPlatformController;
 use App\Http\Controllers\User\ResponseController;
 use App\Http\Controllers\User\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Default Home Route
-Route::get('/', [PublicQuizController::class, 'index'])->name('home');
-Route::get('/public-quizzes/{quiz}', [PublicQuizController::class, 'show'])->name('public-quizzes.show');
-Route::post('/public-quizzes/{quiz}/participate', [PublicQuizController::class, 'participate'])->name('public-quizzes.participate');
-Route::post('/public-quizzes/{quiz}/submit', [PublicQuizController::class, 'submit'])->name('public-quizzes.submit');
+Route::get('/', [QuizPlatformController::class, 'index'])->name('frontend.home');
+Route::get('/public-quizzes/{quiz}', [QuizPlatformController::class, 'participate'])->name('frontend.public-quizzes.participate');
+Route::post('/public-quizzes/{quiz}', [QuizPlatformController::class, 'submit'])->name('frontend.public-quizzes.submit');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
