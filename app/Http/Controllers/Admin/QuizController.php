@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QuizRequest;
+use App\Http\Requests\UpdateQuizRequest;
 use App\Models\Quiz;
 use App\Services\QuizService;
 use Illuminate\Http\Request;
@@ -24,7 +25,11 @@ class QuizController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $quizzes = Quiz::get();
+            if (auth()->user()->hasRole('admin')){
+                $quizzes = Quiz::get();
+            } else {
+                $quizzes = Quiz::where('user_id', auth()->id())->get();
+            }
             return DataTables::of($quizzes)
                 ->addIndexColumn()
                 ->addColumn('start_time', function (Quiz $quiz) {
@@ -85,48 +90,10 @@ class QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quiz $quiz)
+    public function update(UpdateQuizRequest $request, Quiz $quiz)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_time' => 'required|date|before:end_time',
-            'end_time' => 'required|date|after:start_time',
-            'timer' => 'required|integer|min:1',
-            'questions' => 'required|array|min:1',
-            'questions.*.question' => 'required|string',
-            'questions.*.question_difficulty' => 'required|string',
-            'questions.*.marks' => 'required|integer|min:1',
-            'questions.*.options' => 'nullable|array|required_if:questions.*.type,radio,checkbox',
-            'questions.*.options.*.id' => 'nullable|integer|exists:options,id',
-            'questions.*.options.*.option' => 'nullable|string',
-            'questions.*.options.*.is_correct' => 'nullable',
-        ]);
-        $quizData = $request->only(['title', 'description', 'start_time', 'end_time', 'timer']);
-        $quiz->update($quizData);
-
-        foreach ($validated['questions'] as $index => $questionData) {
-            $question = $quiz->questions[$index];
-    
-            $question->question = $questionData['question'];
-            $question->question_difficulty = $questionData['question_difficulty'];
-            $question->marks = $questionData['marks'];
-    
-            if (in_array($question->type->value, ['radio', 'checkbox'])) {
-                foreach ($questionData['options'] as $optionData) {
-                    $isCorrect = isset($optionData['is_correct']) && $optionData['is_correct'] === 'on' ? 1 : 0;
-                    $option = $question->options->find($optionData['id']);
-                    if ($option) {
-                        $option->update([
-                            'option' => $optionData['option'],
-                            'is_correct' => $isCorrect,
-                        ]);
-                    }
-                }
-            }
-            $question->save();
-        }
-
+        $validated = $request->validated();
+        $this->quizService->updateQuiz($quiz, $validated);
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz updated successfully!');
     }
 
@@ -142,4 +109,25 @@ class QuizController extends Controller
         $quiz->delete();
         return redirect()->route('admin.quizzes.index')->with('success', 'Quiz deleted successfully!');
     }
+
+    public function showParticipants(Quiz $quiz)
+    {
+        $participants = $quiz->participants()->get();
+        return view('admin.quizzes.participants', compact('quiz', 'participants'));
+    }
+
+    // public function showSharedQuiz($id)
+    // {
+    //     $quiz = Quiz::with(['questions', 'questions.options'])->findOrFail($id);
+
+    //     if (!$quiz->is_public) {
+    //         abort(403, 'This quiz is not available for sharing.');
+    //     }
+
+    //     return view('quizzes.shared', compact('quiz'));
+    // }
+
+    
+
+
 }

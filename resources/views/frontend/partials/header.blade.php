@@ -8,14 +8,17 @@
         <ul id="menu">
             @auth
                 <li class="nav-item">
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                    <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a class="nav-link" href="{{route('logout')}}" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+                    </form>
                 </li>
             @else
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="{{ route('login') }}">Login</a>
                 </li>
             @endauth
         </ul>

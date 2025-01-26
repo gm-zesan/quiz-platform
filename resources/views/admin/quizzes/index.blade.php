@@ -29,7 +29,15 @@
                                 </ol> 
                             </nav>
                         </div>
-                        <a href="{{route('admin.quizzes.create')}}" class="add-new">Create Quizzes<i class="ms-1 ri-add-line"></i></a>
+                        @if(auth()->user()->created_quiz_count < 5)
+                            <a href="{{route('admin.quizzes.create')}}" class="add-new">Create Quizzes<i class="ms-1 ri-add-line"></i></a>
+                        @else
+                            <a href="javascript:void(0)" 
+                            onclick="alert('You have reached the maximum limit of 5 quizzes. Upgrade your plan to create more quizzes!');" 
+                            class="add-new" 
+                            style="background-color: #e5e5e5; color: #000">Create Quizzes<i class="ms-1 ri-add-line"></i></a>
+                        @endif
+                    
                     </div>
                     <div class="card-body" style="overflow-x: auto">
                         <table class="table dataTable w-100" id="data-table" style="min-width: 800px;">
@@ -86,6 +94,9 @@
                         orderable: false,
                         render: function(data) {
                             var btns = '<div class="action-btn">';
+
+                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/participants" title="View Participants" class="btn btn-participants">' +
+                                    '<i class="ri-user-3-line"></i></a>';
 
                             btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/edit" title="Edit" class="btn btn-edit"><i class="ri-edit-line"></i></a>';
 

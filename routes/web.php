@@ -29,21 +29,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cache-clear', [ProfileController::class,'cacheClear'])->name('cache-clear');
 
-    Route::middleware('role:user')->group(function () {
-        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('quizzes', UserQuizController::class);
-        Route::resource('quizzes.questions', QuestionController::class)->shallow();
-        Route::resource('quizzes.participants', ParticipantController::class)->only(['index', 'show']);
-        Route::post('responses', [ResponseController::class, 'store'])->name('responses.store');
-    });
+    // Route::middleware('role:user')->group(function () {
+    //     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+    //     Route::resource('quizzes', UserQuizController::class);
+    //     Route::resource('quizzes.questions', QuestionController::class)->shallow();
+    //     Route::resource('quizzes.participants', ParticipantController::class)->only(['index', 'show']);
+    //     Route::post('responses', [ResponseController::class, 'store'])->name('responses.store');
+    // });
 
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/quizzes/{id}/share', [AdminQuizController::class, 'showSharedQuiz'])->name('quizzes.share');
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('/roles', RoleController::class)->except(['show']);
         Route::resource('/assign-roles', AssignRoleController::class)->only(['index', 'store']);
         Route::resource('quizzes', AdminQuizController::class);
+        Route::get('/quizzes/{quiz}/participants', [AdminQuizController::class, 'showParticipants'])->name('quizzes.participants');
     });
+
 });
 
 require __DIR__.'/auth.php';

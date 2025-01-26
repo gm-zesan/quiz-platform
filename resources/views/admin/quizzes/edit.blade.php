@@ -1,6 +1,6 @@
 @extends('admin.app')
 @section('title')
-    Department
+    Edit Quiz
 @endsection
 
 @push('custom-style')
@@ -94,18 +94,27 @@
                             <div class="col-12">
                                 <label for="start_time" class="form-label custom-label">Start Time</label>
                                 <input type="datetime-local" name="start_time" id="start_time" class="form-control custom-input" value="{{ old('start_time', $quiz->start_time->format('Y-m-d\TH:i')) }}" required>
+                                @if($errors->has('start_time'))
+                                    <div class="error_msg">{{ $errors->first('start_time') }}</div>
+                                @endif
                             </div>
     
                             <!-- Quiz End Time -->
                             <div class="col-12">
                                 <label for="end_time" class="form-label custom-label">End Time</label>
                                 <input type="datetime-local" name="end_time" id="end_time" class="form-control custom-input" value="{{ old('end_time', $quiz->end_time->format('Y-m-d\TH:i')) }}" required>
+                                @if($errors->has('end_time'))
+                                    <div class="error_msg">{{ $errors->first('end_time') }}</div>
+                                @endif
                             </div>
     
                             <!-- Quiz Timer -->
                             <div class="col-12">
                                 <label for="timer" class="form-label custom-label">Timer (Minutes)</label>
-                                <input type="number" name="timer" id="timer" class="form-control custom-input" value="{{ old('timer', $quiz->timer) }}" required>
+                                <input type="number" name="timer" id="timer" class="form-control custom-input" value="{{ old('timer', $quiz->timer) }}">
+                                @if($errors->has('timer'))
+                                    <div class="error_msg">{{ $errors->first('timer') }}</div>
+                                @endif
                             </div>
     
                             <!-- Quiz Questions -->
@@ -149,7 +158,20 @@
                                                 <div class="col-md-6 col-12">
                                                     <input type="hidden" name="questions[{{ $index }}][options][{{ $loop->index }}][id]" value="{{ $option->id }}">
                                                     <label for="questions[{{ $index }}][options][{{ $loop->index }}]" class="form-label custom-label">Option {{ $loop->index + 1 }}</label>
-                                                    <input type="checkbox" name="questions[{{ $index }}][options][{{ $loop->index }}][is_correct]" class="form-check-input custom-checkbox ms-2" {{ $option->is_correct ? 'checked' : '' }}>
+                                                    @if($question->type->value == 'radio')
+                                                        <input type="radio" 
+                                                            name="questions[{{ $index }}][is_correct]"
+                                                            value="{{ $option->id }}"
+                                                            class="form-check-input custom-checkbox ms-2" 
+                                                            {{ $option->is_correct ? 'checked' : '' }}>
+                                                    @elseif($question->type->value == 'checkbox')
+                                                        <input type="checkbox" 
+                                                            name="questions[{{ $index }}][options][{{ $loop->index }}][is_correct]"
+                                                            class="form-check-input custom-checkbox ms-2" 
+                                                            {{ $option->is_correct ? 'checked' : '' }}>
+                                                    @endif
+
+
                                                     <input type="text" name="questions[{{ $index }}][options][{{ $loop->index }}][option]" class="form-control custom-input" value="{{ old('questions.' . $index . '.options.' . $loop->index . '.option', $option->option) }}" required>
                                                 </div>
                                                 @endforeach

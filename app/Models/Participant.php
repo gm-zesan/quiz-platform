@@ -11,6 +11,10 @@ class Participant extends Model
 
     protected $fillable = ['quiz_id', 'user_id', 'participant_name', 'email', 'submitted_at'];
 
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
+
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);

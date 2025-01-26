@@ -114,10 +114,12 @@
                                 @if ($question->type->value === 'radio' || $question->type->value === 'checkbox')
                                     @foreach ($question->options as $option)
                                         <div class="form-check">
-                                            <input class="form-check-input" type="{{ $question->type }}"
+                                            <input class="form-check-input" id="{{ $option->id }}" type="{{ $question->type }}"
                                                 name="responses[{{ $question->id }}]{{ $question->type->value === 'checkbox' ? '[]' : '' }}"
                                                 value="{{ $option->id }}">
-                                            <label class="form-check-label">{{ $option->option }}</label>
+                                            <label class="form-check-label" for="{{ $option->id }}">
+                                                {{ $option->option }}
+                                            </label>
                                         </div>
                                     @endforeach
                                 @else

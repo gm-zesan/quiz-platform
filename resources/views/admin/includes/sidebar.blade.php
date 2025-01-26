@@ -14,7 +14,7 @@
         </li>
         <li>
             @if(Auth::user()->hasRole('admin'))
-                <a href="{{ route('admin.dashboard') }}" class="{{ Route::is('admin.dashboard') ? ' active-focus' : '' }}">
+                <a href="{{ route('dashboard') }}" class="{{ Route::is('admin.dashboard') ? ' active-focus' : '' }}">
             @elseif (Auth::user()->hasRole('user'))
                 <a href="{{ route('dashboard') }}" class="{{ Route::is('dashboard') ? ' active-focus' : '' }}">
             @endif
@@ -28,17 +28,8 @@
             <span class="link_names">Main</span>
         </li>
 
-        @if(Auth::user()->hasRole('user'))
-            <li>
-                <a href="{{ route('quizzes.index') }}"
-                   class="{{ in_array(Route::currentRouteName(), ['quizzes.index', 'quizzes.create', 'quizzes.edit']) ? 'active-focus' : '' }}">
-                    <i class="ri-questionnaire-line"></i>
-                    <span class="link_names">My Quizzes</span>
-                </a>
-            </li>
-        @endif
         
-        @if(Auth::user()->hasRole('admin'))
+
             <li>
                 <a href="{{ route('admin.quizzes.index') }}"
                    class="{{ in_array(Route::currentRouteName(), ['admin.quizzes.index', 'admin.quizzes.edit', 'admin.quizzes.show']) ? 'active-focus' : '' }}">
@@ -47,7 +38,7 @@
                 </a>
             </li>
             
-
+            @if(Auth::user()->hasRole('admin'))
             @canany(['user-list', 'user-create', 'user-edit', 'user-delete', 'role-list', 'role-create', 'role-edit', 'role-delete'])
                 <li class="category-li">
                     <span class="link_names">Users</span>
@@ -80,6 +71,7 @@
                 </li>
             @endcan
         @endif
+
     </ul>
 
     <div class="profile_content">

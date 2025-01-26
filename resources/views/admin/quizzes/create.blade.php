@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="is_public" class="form-label custom-label">Is Public?</label>
-                                        <select name="is_public" id="is_public" class="form-select custom-select single-select2">
+                                        <select name="is_public" id="is_public" class="form-select custom-select">
                                             <option value="1">Yes</option>
                                             <option value="0">No</option>
                                         </select>
@@ -174,7 +174,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-md-3 col-6">
                                     <label for="questions[${i}][question_difficulty]" class="form-label custom-label">Difficulty</label>
-                                    <select name="questions[${i}][question_difficulty]" class="form-select custom-select single-select2" required>
+                                    <select name="questions[${i}][question_difficulty]" class="form-select custom-select" required>
                                         ${difficulties.map(difficulty => `<option value="${difficulty}">${difficulty}</option>`).join('')}
                                     </select>
                                 </div>
@@ -184,7 +184,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-md-3 col-6">
                                     <label for="questions[${i}][type]" class="form-label custom-label">Type</label>
-                                    <select name="questions[${i}][type]" class="form-select custom-select single-select2 question-type-select" data-question-index="${i}" required>
+                                    <select name="questions[${i}][type]" class="form-select custom-select question-type-select" data-question-index="${i}" required>
                                         <option value="short_text">Short Text</option>
                                         <option value="long_text">Long Text</option>
                                         <option value="radio">Radio</option>
@@ -199,7 +199,6 @@
                     </div>
                 `;
                 questionsContainer.innerHTML += questionHtml;
-                $('.single-select2').select2();
             }
         });
     

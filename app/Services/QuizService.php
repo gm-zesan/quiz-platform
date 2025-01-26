@@ -49,7 +49,50 @@ class QuizService
                 }
             }
         }
+        auth()->user()->update([
+            'created_quiz_count' => auth()->user()->created_quiz_count + 1,
+        ]);
 
+        return $quiz;
+    }
+
+    public function updateQuiz(Quiz $quiz, array $validated)
+    {
+        $quiz->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'timer' => $validated['timer'],
+        ]);
+
+        foreach ($validated['questions'] as $index => $questionData) {
+            $question = $quiz->questions[$index];
+
+            $question->update([
+                'question' => $questionData['question'],
+                'question_difficulty' => $questionData['question_difficulty'],
+                'marks' => $questionData['marks'],
+            ]);
+
+            if (in_array($question->type->value, ['radio', 'checkbox'])) {
+                foreach ($questionData['options'] as $optionData) {
+                    if($question->type->value === 'checkbox'){
+                        $isCorrect = isset($optionData['is_correct']) && $optionData['is_correct'] === 'on' ? 1 : 0;
+                    }
+                    $option = $question->options->find($optionData['id']);
+                    if ($option) {
+                        $option->update([
+                            'option' => $optionData['option'],
+                            'is_correct' => $isCorrect ?? 0,
+                        ]);
+                        if($question->type->value === 'radio'){
+                            $question->options()->where('id', $questionData['is_correct'])->update(['is_correct' => 1]);
+                        }
+                    }
+                }
+            }
+        }
         return $quiz;
     }
 }

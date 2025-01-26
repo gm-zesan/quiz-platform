@@ -47,27 +47,23 @@
                             @if ($question->type->value === 'radio' || $question->type->value === 'checkbox')
                                 <ul>
                                     @foreach ($question->options as $index => $option)
-                                        @php
-                                            $isUserCorrect = false;
-                                            $userResponse = $responses[$index] ?? null;
-                                            if (is_array($userResponse)) {
-                                                $isUserCorrect = in_array($option->id, $userResponse);
-                                            } elseif ($userResponse !== null) {
-                                                $isUserCorrect = $userResponse == $option->id;
-                                            }
-                                        @endphp
                                         <li
                                             class="
                                             @if ($option->is_correct) text-success
-                                            @elseif ($isUserCorrect)
-                                                text-danger @endif
+                                                @elseif (isset($submittedResponses[$question->id]) 
+                                                    && in_array($option->id, (array)$submittedResponses[$question->id]) 
+                                                    && !$option->is_correct) text-danger
+                                                @endif
                                          ">
                                             {{ $option->option }}
 
                                             <span>
-                                                @if ($responses[$index] ?? null === $option->id)
+                                                @if (isset($submittedResponses[$question->id]) 
+                                                    && in_array($option->id, (array)$submittedResponses[$question->id]))
                                                     @if ($option->is_correct)
-                                                    ✔@else❌
+                                                        ✔
+                                                    @else
+                                                        ❌
                                                     @endif
                                                 @endif
                                             </span>
@@ -76,7 +72,8 @@
                                 </ul>
                             @else
                                 <span class="text-muted">Your response has been saved.</span>
-                                <textarea class="form-control" rows="4" readonly>{{ $question->answer }}</textarea>
+                                <textarea class="form-control" rows="4" readonly> {{ $submittedResponses[$question->id] ?? 'No response' }}</textarea>
+
                             @endif
 
                         </li>
