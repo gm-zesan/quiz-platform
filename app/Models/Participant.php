@@ -9,9 +9,10 @@ class Participant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['quiz_id', 'user_id', 'participant_name', 'email', 'submitted_at'];
+    protected $fillable = ['quiz_id', 'user_id', 'participant_name', 'email', 'started_at', 'submitted_at'];
 
     protected $casts = [
+        'started_at' => 'datetime',
         'submitted_at' => 'datetime',
     ];
 

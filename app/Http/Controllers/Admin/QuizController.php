@@ -121,18 +121,4 @@ class QuizController extends Controller
         return view('admin.quizzes.participants', compact('quiz', 'participants'));
     }
 
-    // public function showSharedQuiz($id)
-    // {
-    //     $quiz = Quiz::with(['questions', 'questions.options'])->findOrFail($id);
-
-    //     if (!$quiz->is_public) {
-    //         abort(403, 'This quiz is not available for sharing.');
-    //     }
-
-    //     return view('quizzes.shared', compact('quiz'));
-    // }
-
-    
-
-
 }

@@ -23,6 +23,12 @@ class ResponseService
             ]);
         }
 
+        if ($participant->quiz_id != $quiz->id || $participant->email != $email) {
+            $participant->update([
+                'started_at' => now(),
+            ]);
+        }
+
         return $participant;
     }
 

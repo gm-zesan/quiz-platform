@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->string('participant_name')->nullable();
             $table->string('email')->nullable();
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
         });

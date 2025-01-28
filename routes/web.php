@@ -26,11 +26,11 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    // Route::get('/quizzes/{id}/share', [AdminQuizController::class, 'showSharedQuiz'])->name('quizzes.share');
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('/roles', RoleController::class)->except(['show']);
         Route::resource('/assign-roles', AssignRoleController::class)->only(['index', 'store']);
+        
         Route::resource('quizzes', AdminQuizController::class);
         Route::get('/quizzes/{quiz}/participants', [AdminQuizController::class, 'showParticipants'])->name('quizzes.participants');
     });
