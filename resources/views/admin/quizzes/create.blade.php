@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="is_public" class="form-label custom-label">Is Public?</label>
-                                        <select name="is_public" id="is_public" class="form-select custom-select">
+                                        <select name="is_public" id="is_public" class="form-select custom-select single-select2">
                                             <option value="1">Yes</option>
                                             <option value="0">No</option>
                                         </select>
@@ -96,9 +96,23 @@
                                             id="end_time" required>
                                     </div>
                                     <div class="col-lg-6 col-12">
-                                        <label for="timer" class="form-label custom-label">Timer (in minutes)</label>
-                                        <input type="number" class="form-control custom-input" name="timer"
-                                            id="timer" required>
+                                        <label for="timer" class="form-label custom-label">Timer</label>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <select name="hours" id="hours" class="form-select custom-input single-select2">
+                                                <option value="" disabled selected>Hours</option>
+                                                @for ($i = 0; $i < 24; $i++)
+                                                    <option value="{{ sprintf('%02d', $i) }}">{{ sprintf('%02d', $i) }}</option>
+                                                @endfor
+                                            </select>
+                                        
+                                            <select name="minutes" id="minutes" class="form-select custom-input single-select2">
+                                                <option value="" disabled selected>Minutes</option>
+                                                @for ($i = 0; $i < 60; $i++)
+                                                    <option value="{{ sprintf('%02d', $i) }}">{{ sprintf('%02d', $i) }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="timer" id="timer" value="">
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="total_question" class="form-label custom-label">Total Questions</label>
@@ -147,7 +161,7 @@
             const totalQuestions = document.getElementById('total_question').value;
     
             // Check if all required fields are filled
-            if (!title || !description || !startTime || !endTime || !timer || !totalQuestions) {
+            if (!title || !startTime || !endTime || !totalQuestions) {
                 alert('Please fill out all fields before proceeding.');
                 return;
             }

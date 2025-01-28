@@ -84,7 +84,12 @@ class QuizController extends Controller
     public function edit(Quiz $quiz)
     {
         $quiz->load(['questions', 'user', 'participants']);
-        return view('admin.quizzes.edit', compact('quiz'));
+        $hours = null;
+        $minutes = null;
+        if (!empty($quiz->timer)) {
+            [$hours, $minutes] = explode(':', $quiz->timer);
+        }
+        return view('admin.quizzes.edit', compact('quiz', 'hours', 'minutes'));
     }
 
     /**

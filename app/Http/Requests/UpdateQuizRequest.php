@@ -23,10 +23,10 @@ class UpdateQuizRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'start_time' => 'required|date|before:end_time',
             'end_time' => 'required|date|after:start_time',
-            'timer' => 'nullable|min:1',
+            'timer' => 'nullable',
             'questions' => 'required|array|min:1',
             'questions.*.question' => 'required|string',
             'questions.*.question_difficulty' => 'required|string',

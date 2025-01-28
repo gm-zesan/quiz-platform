@@ -91,7 +91,7 @@
                             </div>
     
                             <!-- Quiz Start Time -->
-                            <div class="col-12">
+                            <div class="col-md-6 col-12">
                                 <label for="start_time" class="form-label custom-label">Start Time</label>
                                 <input type="datetime-local" name="start_time" id="start_time" class="form-control custom-input" value="{{ old('start_time', $quiz->start_time->format('Y-m-d\TH:i')) }}" required>
                                 @if($errors->has('start_time'))
@@ -100,7 +100,7 @@
                             </div>
     
                             <!-- Quiz End Time -->
-                            <div class="col-12">
+                            <div class="col-md-6 col-12">
                                 <label for="end_time" class="form-label custom-label">End Time</label>
                                 <input type="datetime-local" name="end_time" id="end_time" class="form-control custom-input" value="{{ old('end_time', $quiz->end_time->format('Y-m-d\TH:i')) }}" required>
                                 @if($errors->has('end_time'))
@@ -109,9 +109,28 @@
                             </div>
     
                             <!-- Quiz Timer -->
-                            <div class="col-12">
+                            <div class="col-md-6 col-12">
                                 <label for="timer" class="form-label custom-label">Timer (Minutes)</label>
-                                <input type="number" name="timer" id="timer" class="form-control custom-input" value="{{ old('timer', $quiz->timer) }}">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <select name="hours" id="hours" class="form-select single-select2">
+                                        <option value="" disabled>Hours</option>
+                                        @for ($i = 0; $i < 24; $i++)
+                                            <option value="{{ sprintf('%02d', $i) }}" {{ isset($hours) && $hours == $i ? 'selected' : '' }}>
+                                                {{ sprintf('%02d', $i) }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                            
+                                    <select name="minutes" id="minutes" class="form-select single-select2">
+                                        <option value="" disabled>Minutes</option>
+                                        @for ($i = 0; $i < 60; $i++)
+                                            <option value="{{ sprintf('%02d', $i) }}" {{ isset($minutes) && $minutes == $i ? 'selected' : '' }}>
+                                                {{ sprintf('%02d', $i) }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+                                <input type="hidden" name="timer" id="timer" value="{{ old('timer', $quiz->timer) }}">
                                 @if($errors->has('timer'))
                                     <div class="error_msg">{{ $errors->first('timer') }}</div>
                                 @endif

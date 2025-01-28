@@ -60,6 +60,19 @@
 </script>
 
 
+{{-- Timer script --}}
+<script>
+    $(document).ready(function() {
+        $('#hours, #minutes').change(function() {
+            var hours = $('#hours').val() || '00';
+            var minutes = $('#minutes').val() || '00';
+            var timer = hours + ':' + minutes;
+            $('#timer').val(timer);
+        });
+    });
+</script>
+
+
 {{-- sidebar dropdown menu --}}
 <script>
     $(function() {

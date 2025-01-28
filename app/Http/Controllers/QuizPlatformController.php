@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Participant;
 use App\Models\Quiz;
 use App\Models\Response;
 use App\Services\ResponseService;
@@ -34,7 +35,8 @@ class QuizPlatformController extends Controller
         if(!auth()->check()){
             return view('frontend.participate', compact('quiz'));
         }else{
-            return view('frontend.quiz', compact('quiz'));
+            $participant = $this->responseService->createparticipant($quiz);
+            return view('frontend.quiz', compact('quiz', 'participant'));
         }
     }
 
@@ -57,16 +59,17 @@ class QuizPlatformController extends Controller
     {
         $quiz = Quiz::with('questions', 'questions.options')->findOrFail($id);
         $participantId = $request->participant_id;
-
-        dd($request->all());
-
+        $validated = $request->validate([
+            'responses' => 'nullable|array',
+            'responses.*' => 'nullable',
+        ]);
         $score = 0;
         $responsesWithOptions = [];
         $responsesWithText = [];
         $submittedResponses = [];
         foreach ($quiz->questions as $question) {
             $responses = $validated['responses'][$question->id] ?? null;
-            
+
             if (is_array($responses)) {
                 $correctOptions = $question->options->where('is_correct', true)->pluck('id')->toArray();
                 $selectedOptions = $responses;
@@ -76,7 +79,7 @@ class QuizPlatformController extends Controller
                 }
                 foreach ($selectedOptions as $optionId) {
                     $responsesWithOptions[] = [
-                        'participant_id' => $participant->id,
+                        'participant_id' => $participantId,
                         'question_id' => $question->id,
                         'option_id' => $optionId
                     ];
@@ -88,14 +91,14 @@ class QuizPlatformController extends Controller
                     $score += $question->marks;
                 }
                 $responsesWithOptions[] = [
-                    'participant_id' => $participant->id,
+                    'participant_id' => $participantId,
                     'question_id' => $question->id,
                     'option_id' => $responses
                 ];
                 $submittedResponses[$question->id] = $responses;
             } else {
                 $responsesWithText[] = [
-                    'participant_id' => $participant->id,
+                    'participant_id' => $participantId,
                     'question_id' => $question->id,
                     'answer' => $responses
                 ];
@@ -110,8 +113,6 @@ class QuizPlatformController extends Controller
         if (!empty($responsesWithText)) {
             Response::insert($responsesWithText);
         }
-
-
         return view('frontend.result', compact('quiz', 'score', 'submittedResponses'));
     }
 

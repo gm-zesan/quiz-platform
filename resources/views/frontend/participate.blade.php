@@ -87,8 +87,8 @@
             <div class="col-lg-6 col-md-8">
                 <div class="form-container">
                     <h2>{{ $quiz->title }}</h2>
-                    <p>{{ $quiz->description }}</p>
-                    <form method="POST" action="{{ route('frontend.participant.submit') }}">
+                    <p>Enter Your Name and Email</p>
+                    <form method="POST" action="{{ route('frontend.participant.submit', $quiz->id) }}">
                         @csrf
                         <div class="mb-3">
                             <label for="participant_name" class="form-label">Name</label>
