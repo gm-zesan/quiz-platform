@@ -1,7 +1,7 @@
 <header>
     <div class="container d-flex align-items-center justify-content-between">
         <!--logo start-->
-        <a href="index.html" class="sm_logo">
+        <a href="{{ route('frontend.home') }}" class="sm_logo">
             <img src="{{ asset('frontend/img/sm_logo.png') }}" class="img-fluid" alt="">
         </a>
         <!--menu start-->

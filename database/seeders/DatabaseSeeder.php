@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionTableSeeder::class,
             UserSeeder::class,
+            QuizSeeder::class,
+            QuestionSeeder::class,
+            OptionSeeder::class,
         ]);
     }
 }

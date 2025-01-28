@@ -22,9 +22,17 @@ class UserSeeder extends Seeder
             'email' => 'gmzesan7767@gmail.com',
             'password' => bcrypt('12345678aA'),
         ]);
+        $user = User::create([
+            'name' => 'Hasan',
+            'email' => 'hasan@gmail.com',
+            'password' => bcrypt('12345678aA'),
+        ]);
+
         $permissions = Permission::pluck('id','name')->all();
         $admin->assignRole('admin');
         $adminRole = Role::findByName('admin');
         $adminRole->givePermissionTo($permissions);
+
+        $user->assignRole('user');
     }
 }

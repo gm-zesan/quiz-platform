@@ -24,7 +24,7 @@ class User extends Authenticatable
         'phone',
         'image',
         'password',
-        'plan',
+        'is_premium',
         'created_quiz_count',
     ];
 

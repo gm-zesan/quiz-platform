@@ -89,7 +89,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="{{ route('frontend.home') }}">
-                    <img style="max-width: 100px" src="{{ asset('frontend/img/logo.png') }}" alt="logo">
+                    <img style="max-width: 100px" src="{{ asset('frontend/img/f_logo.png') }}" alt="logo">
                 </a>
             </div>
 

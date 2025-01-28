@@ -1,9 +1,8 @@
 <footer>
     <div class="container">
         <div class="foot_wapp">
-            <a href="#"><img src="{{ asset('frontend/img/f_logo.png') }}" alt=""></a>
-            <p>© BUILDNER – ALL RIGHTS RESERVED.</p>
-            <a href="#">PRIVACY & COOKIE POLICY</a>
+            <a href="{{ route('frontend.home') }}"><img src="{{ asset('frontend/img/f_logo.png') }}" alt=""></a>
+            <p>© QUIZ Platform - ALL RIGHTS RESERVED.</p>
             <div class="social_icon">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>

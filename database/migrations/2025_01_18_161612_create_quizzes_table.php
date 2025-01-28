@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_public')->default(true);
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
-            $table->float('timer')->nullable();
+            $table->time('timer')->nullable();
             $table->integer('total_question');
             $table->timestamps();
         });

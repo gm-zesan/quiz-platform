@@ -86,21 +86,35 @@
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
                 <div class="form-container">
+                    <div id="timer" class="text-danger fw-bold text-end">
+                        {{ $quiz->timer }} munites
+                    </div>
+                    
                     <h2>{{ $quiz->title }}</h2>
                     <p>{{ $quiz->description }}</p>
-                    <form method="POST" action="{{ route('frontend.participant.submit') }}">
+                    <form id="quizForm" method="POST" action="{{ route('frontend.quizzes.submit', $quiz->id) }}">
                         @csrf
-                        <div class="mb-3">
-                            <label for="participant_name" class="form-label">Name</label>
-                            <input type="text" name="participant_name" id="participant_name"
-                                class="form-control form-input" placeholder="Enter your name" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="participant_email" class="form-label">Email</label>
-                            <input type="email" name="participant_email" id="participant_email"
-                                class="form-control form-input" placeholder="Enter your email" required>
-                        </div>
+                        <input type="hidden" name="participant_id" value="{{ $participant->id }}">
+                        @foreach ($quiz->questions as $question)
+                            <div class="question mb-3">
+                                <label class="form-label">{{ $question->question }}</label>
+                                @if ($question->type->value === 'radio' || $question->type->value === 'checkbox')
+                                    @foreach ($question->options as $option)
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="{{ $option->id }}" type="{{ $question->type }}"
+                                                name="responses[{{ $question->id }}]{{ $question->type->value === 'checkbox' ? '[]' : '' }}"
+                                                value="{{ $option->id }}">
+                                            <label class="form-check-label" for="{{ $option->id }}">
+                                                {{ $option->option }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <textarea class="form-control form-input" rows="4" name="responses[{{ $question->id }}]" id="message"
+                                        placeholder="Type here..."></textarea>
+                                @endif
+                            </div>
+                        @endforeach
 
                         <button type="submit" class="btn btn-custom w-100">Submit</button>
                         <a href="{{ route('frontend.home') }}" class="btn btn-link w-100 mt-3">Back to Home</a>

@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Participant;
 use App\Models\Quiz;
 use App\Models\Response;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class QuizPlatformController extends Controller
 {
+    protected $responseService;
+
+    public function __construct(ResponseService $responseService)
+    {
+        $this->responseService = $responseService;
+    }
+
+
     public function index()
     {
         $quizes = Quiz::where('start_time', '<=', now())
@@ -23,37 +31,34 @@ class QuizPlatformController extends Controller
         if (!$quiz->is_public && !auth()->check()) {
             return redirect()->route('login');
         }
-        return view('frontend.participate', compact('quiz'));
+        if(!auth()->check()){
+            return view('frontend.participate', compact('quiz'));
+        }else{
+            return view('frontend.quiz', compact('quiz'));
+        }
     }
 
-    public function submit(Request $request, $id)
+    public function storePatricipant(Request $request, $id)
     {
         $quiz = Quiz::with('questions', 'questions.options')->findOrFail($id);
 
         $validated = $request->validate([
-            'responses' => 'required|array',
-            'responses.*' => 'nullable',
-            'participant_name' => 'required_if:user,null|string|max:255',
-            'participant_email' => 'required_if:user,null|email|max:255',
+            'participant_name' => 'required|string|max:255',
+            'participant_email' => 'required|email|max:255',
         ]);
 
-        if (auth()->check()) {
-            $existingParticipant = Participant::where('user_id', auth()->id())->first();
-        }else{
-            $existingParticipant = Participant::where('email', $request->input('participant_email'))
-            ->first();
-        }
-        if ($existingParticipant) {
-            $participant = $existingParticipant;
-        } else {
-            $participant = $quiz->participants()->create([
-                'user_id' => auth()->check() ? auth()->id() : null,
-                'participant_name' => auth()->check() ? auth()->user()->name : $validated['participant_name'],
-                'email' => auth()->check() ? auth()->user()->email : $validated['participant_email'],
-                'submitted_at' => now(),
-            ]);
-        }
-        
+        $participant = $this->responseService->createparticipant($quiz, $validated['participant_email'], $validated['participant_name']);
+
+        return view('frontend.quiz', compact('quiz', 'participant'));
+    }
+
+
+    public function storeQuiz(Request $request, $id)
+    {
+        $quiz = Quiz::with('questions', 'questions.options')->findOrFail($id);
+        $participantId = $request->participant_id;
+
+        dd($request->all());
 
         $score = 0;
         $responsesWithOptions = [];
