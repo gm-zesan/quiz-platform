@@ -34,11 +34,14 @@ class QuizService
 
             if (in_array($questionData['type'], ['radio', 'checkbox'])) {
                 foreach ($questionData['options'] as $optionData) {
-                    Option::create([
-                        'question_id' => $question->id,
-                        'option' => $optionData['option'],
-                        'is_correct' => false,
-                    ]);
+                    if($optionData['option'] != '' || $optionData['option'] != null){
+                        // dd($optionData['option']);          
+                        Option::create([
+                            'question_id' => $question->id,
+                            'option' => $optionData['option'],
+                            'is_correct' => false,
+                        ]);
+                    }
                 }
 
                 $correctOptionIndexes = $questionData['correct_option'] ?? [];

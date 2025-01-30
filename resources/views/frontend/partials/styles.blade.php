@@ -5,3 +5,10 @@
 <link href="{{ asset('frontend/css/helper.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('frontend/css/responsive.css') }}" rel="stylesheet" type="text/css" />
+
+
+<style>
+  .prize_box:hover {
+    box-shadow: 0 10px 10px rgba(2, 23, 63, 0.2);
+  }
+</style>

@@ -9,6 +9,8 @@ use App\Models\Quiz;
 use App\Services\QuizService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
+
 
 class QuizController extends Controller
 {
@@ -32,6 +34,9 @@ class QuizController extends Controller
             }
             return DataTables::of($quizzes)
                 ->addIndexColumn()
+                ->addColumn('description', function (Quiz $quiz) {
+                    return Str::limit($quiz->description, 100);
+                })
                 ->addColumn('start_time', function (Quiz $quiz) {
                     return $quiz->start_time->format('d F Y \a\t h:i A');
                 })

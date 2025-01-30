@@ -22,6 +22,8 @@ class QuizPlatformController extends Controller
     {
         $quizes = Quiz::where('start_time', '<=', now())
             ->where('end_time', '>=', now())
+            ->where('is_public', true)
+            ->limit(5)
             ->get();
         return view('frontend.index', compact('quizes'));
     }
@@ -38,6 +40,36 @@ class QuizPlatformController extends Controller
             $participant = $this->responseService->createparticipant($quiz);
             return view('frontend.quiz', compact('quiz', 'participant'));
         }
+    }
+
+    public function startQuiz(Request $request, $quiz, $participant)
+    {
+        $quiz = Quiz::with('questions', 'questions.options')->findOrFail($quiz);
+        $participant = Participant::findOrFail($participant);
+
+        if($quiz->timer){
+            if($participant->started_at){
+                $timer = $participant->started_at->diffInSeconds(now());
+                $quiz_time = explode(':', $quiz->timer);
+                $quiz_time = $quiz_time[0] * 3600 + $quiz_time[1] * 60 + $quiz_time[2];
+                $remaining_time = $quiz_time - $timer;
+                if($remaining_time <= 0){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Your time is over',
+                    ]);
+                }
+                $remaining_time_formatted = sprintf('%02d:%02d:%02d', floor($remaining_time / 3600), floor(($remaining_time % 3600) / 60), $remaining_time % 60);
+                $quiz->timer = $remaining_time_formatted;
+            }else{
+                $participant->update(['started_at' => now()]);
+            }
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'data' => $quiz,
+        ]);
     }
 
     public function storePatricipant(Request $request, $id)
@@ -57,6 +89,7 @@ class QuizPlatformController extends Controller
 
     public function storeQuiz(Request $request, $id)
     {
+        // dd($request->all());
         $quiz = Quiz::with('questions', 'questions.options')->findOrFail($id);
         $participantId = $request->participant_id;
         $validated = $request->validate([

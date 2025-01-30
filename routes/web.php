@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [QuizPlatformController::class, 'index'])->name('frontend.home');
 Route::get('/participant/{quiz}', [QuizPlatformController::class, 'participate'])->name('frontend.quizzes.participate');
+Route::get('/participant/{quiz}/{participant}/start', [QuizPlatformController::class, 'startQuiz'])->name('frontend.quizzes.start');
 Route::post('/participant/{quiz}/submit', [QuizPlatformController::class, 'storePatricipant'])->name('frontend.participant.submit');
 Route::post('/quizzes/{quiz}', [QuizPlatformController::class, 'storeQuiz'])->name('frontend.quizzes.submit');
 

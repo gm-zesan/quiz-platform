@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label for="description" class="form-label custom-label">Description</label>
-                                        <textarea class="form-control custom-textarea" name="description" id="description" rows="5" required></textarea>
+                                        <textarea class="form-control custom-textarea" name="description" id="description" rows="5"></textarea>
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="is_public" class="form-label custom-label">Is Public?</label>
@@ -88,12 +88,12 @@
                                     <div class="col-lg-6 col-12">
                                         <label for="start_time" class="form-label custom-label">Start Time</label>
                                         <input type="datetime-local" class="form-control custom-input" name="start_time"
-                                            id="start_time" required>
+                                            id="start_time" required value="{{ now()->format('Y-m-d\TH:i') }}">
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="end_time" class="form-label custom-label">End Time</label>
                                         <input type="datetime-local" class="form-control custom-input" name="end_time"
-                                            id="end_time" required>
+                                            id="end_time" required value="{{ now()->addDays(1)->format('Y-m-d\TH:i') }}">
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <label for="timer" class="form-label custom-label">Timer</label>
@@ -115,9 +115,9 @@
                                         <input type="hidden" name="timer" id="timer" value="">
                                     </div>
                                     <div class="col-lg-6 col-12">
-                                        <label for="total_question" class="form-label custom-label">Total Questions</label>
+                                        <label for="total_question" class="form-label custom-label">Number of Questions</label>
                                         <input type="number" class="form-control custom-input" name="total_question"
-                                            id="total_question" required>
+                                            id="total_question" required value="1">
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +138,14 @@
 
             <div id="question-details" style="display: none;" class="mb-5">
                 <div id="questions-container"></div>
-                <button type="submit" id="save-quiz-button" class="btn quiz-save-button">Save Quiz</button>
+                <div class="row">
+                    <div class="col-md-3 col-12">
+                        <button type="button" id="add-question-button" class="btn custom-button-secondary" onclick="addQuestion()">Add Question</button>
+                    </div>
+                    <div class="col-md-3 col-12">
+                        <button type="submit" id="save-quiz-button" class="btn custom-button-primary">Save Quiz</button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -205,6 +212,11 @@
                                         <option value="checkbox">Checkbox</option>
                                     </select>
                                 </div>
+                                <div class="col-xxl-2 col-md-3 col-6" id="addOptions-${i}" style="display: none;">
+                                    <label class="form-label custom-label">Add Options</label>
+                                    <button type="button" class="btn custom-button-primary add-more-options" data-question-index="${i}">Add Options</button>
+                                    <input type="hidden" name="questions[${i}][total_options]" value="1">
+                                </div>
                                 <div class="col-12">
                                     <div class="row" id="options-container-${i}"></div>
                                 </div>
@@ -216,66 +228,151 @@
             }
         });
     
+        // Handles the input event for total options
+        $(document).on('input', 'input[name*="[options]"]', function(e) {
+            const input = $(this);
+            const questionIndex = input.attr('name').match(/\[(\d+)\]\[options\]/)[1];
+            const optionIndex = parseInt(input.attr('name').match(/\[(\d+)\]\[option\]/)[1]);
+            const optionsContainer = $(`#options-container-${questionIndex}`);
+            
+            // Check if this is the last option and it has value
+            if (input.val().trim() !== '' && optionIndex === optionsContainer.find('input[name*="[options]"]').length - 1) {
+                // Add new empty option
+                const newOptionIndex = optionIndex + 1;
+                optionsContainer.append(`
+                    <div class="col-xxl-2 col-md-3 col-6">
+                        <label for="option-${questionIndex}-${newOptionIndex}" class="form-label custom-label">Option ${newOptionIndex + 1}</label>
+                        <input type="text" id="option-${questionIndex}-${newOptionIndex}" 
+                               name="questions[${questionIndex}][options][${newOptionIndex}][option]" 
+                               class="form-control custom-input">
+                    </div>
+                `);
+                
+                // Update total options input
+                $(`input[name="questions[${questionIndex}][total_options]"]`).val(newOptionIndex + 1);
+
+                // Update correct options select
+                const correctOptionsSelect = $(`#correct-options-${questionIndex}`);
+                correctOptionsSelect.append(`<option value="${newOptionIndex}">Option ${newOptionIndex + 1}</option>`);
+            }
+        });
+
         // Handles the change event for question type
         $(document).on('change', '.question-type-select', function(e) {
             const questionIndex = $(this).data('question-index');
-            const optionsContainer = document.getElementById(`options-container-${questionIndex}`);
-            optionsContainer.innerHTML = '';
+            const optionsContainer = $(`#options-container-${questionIndex}`);
+            optionsContainer.html('');
 
             if ($(this).val() === 'radio' || $(this).val() === 'checkbox') {
-                optionsContainer.innerHTML = `
+                // Show first option and correct options select
+                optionsContainer.html(`
                     <div class="col-xxl-2 col-md-3 col-6">
-                        <label for="questions[${questionIndex}][total_options]" class="form-label custom-label">Total Options</label>
-                        <input type="number" name="questions[${questionIndex}][total_options]" class="form-control custom-input total-options-input" data-question-index="${questionIndex}" required>
-                    </div>
-                `;
-            }
-        });
-
-    
-        // Handles the input event for total options
-        document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('total-options-input')) {
-                const questionIndex = e.target.getAttribute('data-question-index');
-                const totalOptions = e.target.value;
-                const optionsContainer = document.getElementById(`options-container-${questionIndex}`);
-                const optionsHtml = [];
-                for (let i = 0; i < totalOptions; i++) {
-                    optionsHtml.push(`
-                        <div class="col-xxl-2 col-md-3 col-6">
-                            <label for="questions[${questionIndex}][options][${i}][option]" class="form-label custom-label">Option ${i + 1}</label>
-                            <input type="text" name="questions[${questionIndex}][options][${i}][option]" class="form-control custom-input" required>
-                        </div>
-                    `);
-                }
-
-                optionsHtml.push(`
-                    <div class="col-xxl-2 col-md-3 col-6">
-                        <label for="questions[${questionIndex}][correct_option]" class="form-label custom-label">Correct Option(s)</label>
-                        <select name="questions[${questionIndex}][correct_option][]" class="form-control custom-select multiple-select2" multiple required>
-                            ${Array.from({ length: totalOptions }).map((_, i) => 
-                                `<option value="${i}">Option ${i + 1}</option>`
-                            ).join('')}
+                        <label for="correct-options-${questionIndex}" class="form-label custom-label">Correct Option(s)</label>
+                        <select id="correct-options-${questionIndex}" 
+                                name="questions[${questionIndex}][correct_option][]" 
+                                class="form-control custom-select multiple-select2" 
+                                multiple required>
+                            <option value="0">Option 1</option>
                         </select>
                     </div>
-                `);
-    
-                const existingTotalOptionsField = `
                     <div class="col-xxl-2 col-md-3 col-6">
-                        <label for="questions[${questionIndex}][total_options]" class="form-label custom-label">Total Options</label>
-                        <input type="number" name="questions[${questionIndex}][total_options]" class="form-control custom-input total-options-input" data-question-index="${questionIndex}" value="${totalOptions}" required>
+                        <label for="option-${questionIndex}-0" class="form-label custom-label">Option 1</label>
+                        <input type="text" id="option-${questionIndex}-0" 
+                               name="questions[${questionIndex}][options][0][option]" 
+                               class="form-control custom-input" required>
                     </div>
-                `;
-                optionsHtml.unshift(existingTotalOptionsField);
-    
-                optionsContainer.innerHTML = optionsHtml.join('');
-                // Reinitialize Select2 for new elements
-                $('.multiple-select2').select2({
+                `);
+                
+                // Initialize Select2
+                $(`#correct-options-${questionIndex}`).select2({
                     placeholder: "Select Correct Answer",
                     allowClear: true
                 });
+
+                // Show the add more options button
+                $(`#addOptions-${questionIndex}`).show();
+            }else{
+                // Hide the add more options button
+                $(`#addOptions-${questionIndex}`).hide();
             }
         });
+
+        // Handles adding more options manually
+        $(document).on('click', '.add-more-options', function() {
+            const questionIndex = $(this).data('question-index');
+            const optionsContainer = $(`#options-container-${questionIndex}`);
+            const currentOptionsCount = optionsContainer.find('input[name*="[options]"]').length;
+            
+            optionsContainer.append(`
+                <div class="col-xxl-2 col-md-3 col-6">
+                    <label for="option-${questionIndex}-${currentOptionsCount}" class="form-label custom-label">Option ${currentOptionsCount + 1}</label>
+                    <input type="text" id="option-${questionIndex}-${currentOptionsCount}" 
+                           name="questions[${questionIndex}][options][${currentOptionsCount}][option]" 
+                           class="form-control custom-input">
+                </div>
+            `);
+
+            // Update total options input
+            $(`input[name="questions[${questionIndex}][total_options]"]`).val(currentOptionsCount + 1);
+            
+            // Update correct options select
+            const correctOptionsSelect = $(`#correct-options-${questionIndex}`);
+            correctOptionsSelect.append(`<option value="${currentOptionsCount}">Option ${currentOptionsCount + 1}</option>`);
+        });
+
+
+        function addQuestion() {
+            var questionsContainer = document.getElementById('questions-container');
+            var totalQuestions = Number(document.getElementById('total_question').value);
+
+            const newQuestion = document.createElement('div');
+            newQuestion.classList.add('card', 'table-card', 'mb-3');
+            newQuestion.innerHTML = `
+                <div class="card-header table-header">
+                    <div class="table-title">Question ${totalQuestions + 1}</div>
+                </div>
+                <div class="card-body custom-form">
+                    <div class="row">
+                        <div class="col-xxl-6 col-12">
+                            <label for="questions[${totalQuestions}][question]" class="form-label custom-label">Question</label>
+                            <textarea name="questions[${totalQuestions}][question]" class="form-control custom-input" style="resize: none;" placeholder="Enter question" required></textarea>
+                        </div>
+                        <div class="col-xxl-2 col-md-3 col-6">
+                            <label for="questions[${totalQuestions}][question_difficulty]" class="form-label custom-label">Difficulty</label>
+                            <select name="questions[${totalQuestions}][question_difficulty]" class="form-select custom-select" required>
+                                ${difficulties.map(difficulty => `<option value="${difficulty}">${difficulty}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="col-xxl-2 col-md-3 col-6">
+                            <label for="questions[${totalQuestions}][marks]" class="form-label custom-label">Marks</label>
+                            <input type="number" name="questions[${totalQuestions}][marks]" class="form-control custom-input" required>
+                        </div>
+                        <div class="col-xxl-2 col-md-3 col-6">
+                            <label for="questions[${totalQuestions}][type]" class="form-label custom-label">Type</label>
+                            <select name="questions[${totalQuestions}][type]" class="form-select custom-select question-type-select" data-question-index="${totalQuestions}" required>
+                                <option value="short_text">Short Text</option>
+                                <option value="long_text">Long Text</option>
+                                <option value="radio">Radio</option>
+                                <option value="checkbox">Checkbox</option>
+                            </select>
+                        </div>
+                        <div class="col-xxl-2 col-md-3 col-6" id="addOptions-${totalQuestions}" style="display: none;">
+                            <label class="form-label custom-label">Add Options</label>
+                            <button type="button" class="btn custom-button-primary add-more-options" data-question-index="${totalQuestions}">Add Options</button>
+                            <input type="hidden" name="questions[${totalQuestions}][total_options]" value="1">
+                        </div>
+                        <div class="col-12">
+                            <div class="row" id="options-container-${totalQuestions}"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            questionsContainer.appendChild(newQuestion);
+            totalQuestions++;
+            document.getElementById('total_question').value = totalQuestions;
+        }
+
+
     </script>
     
 @endpush
