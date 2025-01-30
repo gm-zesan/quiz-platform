@@ -210,6 +210,7 @@
                                 ${response.message}
                             </div>
                         `);
+                        $('#quiz-container').addClass('mt-5');
                         $('#quiz-container').show();
                         console.log(response);
                     }else{

@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         
         Route::resource('quizzes', AdminQuizController::class);
         Route::get('/quizzes/{quiz}/participants', [AdminQuizController::class, 'showParticipants'])->name('quizzes.participants');
+        Route::get('/quizzes/{quiz}/participants/{participant}', [AdminQuizController::class, 'showSingleParticipant'])->name('quizzes.single-participant');
     });
 
 });

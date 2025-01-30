@@ -17,7 +17,58 @@
 @endpush
 
 @section('content')
+
+
     <div class="container-fluid my-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <h6 class="p-0 m-0">Welcome {{ auth()->user()->name }}!</h6>
+                        <p class="p-0 m-0">
+                            Remaining quiz: <span class="fw-bold">{{ config('quiz.quiz_count') - auth()->user()->created_quiz_count }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="p-0 m-0">Quiz Created: <span class="fw-bold">{{ auth()->user()->created_quiz_count }}</span></h6>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="p-0 m-0">
+                                <a href="{{ route('admin.quizzes.index') }}" class="btn custom-button-primary mb-0">View all</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="p-0 m-0">Total participants: <span class="fw-bold">{{ $total_participants }}</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="p-0 m-0">Average score: <span class="fw-bold">{{ round($average_score, 2) }}%</span></h6>
+                        
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    {{-- <div class="container-fluid my-3">
         
         <div class="row mb-5">
             <div class="col-md-4">
@@ -103,7 +154,7 @@
                 </div>
             @endcan
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @push('custom-scripts')

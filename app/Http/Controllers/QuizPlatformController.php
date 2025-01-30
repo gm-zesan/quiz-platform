@@ -57,6 +57,7 @@ class QuizPlatformController extends Controller
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Your time is over',
+                        'see_result' => true,
                     ]);
                 }
                 $remaining_time_formatted = sprintf('%02d:%02d:%02d', floor($remaining_time / 3600), floor(($remaining_time % 3600) / 60), $remaining_time % 60);
@@ -64,6 +65,20 @@ class QuizPlatformController extends Controller
             }else{
                 $participant->update(['started_at' => now()]);
             }
+        }
+
+        if($quiz->start_time > now()){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Quiz is not started yet',
+            ]);
+        }
+        if($quiz->end_time < now()){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Quiz has been ended',
+                'see_result' => $participant->started_at ? true : false
+            ]);
         }
         
         return response()->json([
@@ -146,6 +161,10 @@ class QuizPlatformController extends Controller
         if (!empty($responsesWithText)) {
             Response::insert($responsesWithText);
         }
+
+        $participant = Participant::findOrFail($participantId);
+        $participant->update(['score' => $score, 'submitted_at' => now()]);
+
         return view('frontend.result', compact('quiz', 'score', 'submittedResponses'));
     }
 
