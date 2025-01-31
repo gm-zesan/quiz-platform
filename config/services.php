@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'paypal' => [
+        'client_id' => env('PAYPAL_SANDBOX_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_SANDBOX_CLIENT_SECRET'),
+        'mode' => env('PAYPAL_SANDBOX_MODE', true) ? 'sandbox' : 'live',
+        'currency' => env('PAYPAL_CURRENCY', 'USD'),
+    ],
+
 ];

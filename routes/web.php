@@ -10,6 +10,7 @@ use App\Http\Controllers\QuizPlatformController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\PaymentController;
 
 
 
@@ -68,6 +69,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
     //SSLCOMMERZ END
     
+
+    // Route::prefix('payment')->group(function () {
+    //     Route::post('/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+    //     Route::get('/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+    //     Route::get('/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
+    // });
 
 });
 
