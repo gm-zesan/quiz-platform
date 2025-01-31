@@ -5,6 +5,13 @@
 
 
 @section('content')
+
+    @if (session('error'))
+        <script>
+            alert('{{ session('error') }}');
+        </script>
+    @endif
+
     <!-- banner area -->
     <div class="banner_area" style="background-image: url({{ asset('frontend/img/home_bg.png') }});">
         <div class="container">
@@ -94,7 +101,10 @@
                                 <div class="col-lg-4 col-md-6 mt_30 text-center">
                                     <div class="getfe_item">
                                         <div class="getfe_txt">
-                                            <h2>$0</h2>
+                                            <h2>
+                                                <span style="font-size: 25px;">{{ env('CURRENCY') == 'BDT' ? '৳' : '$' }}</span>
+                                                0
+                                            </h2>
                                             <h3>Free Plan (Active)</h3>
                                         </div>
                                         <div class="getfe_second">
@@ -107,14 +117,20 @@
                                 <div class="col-lg-4 col-md-6 mt_30 text-center">
                                     <div class="getfe_item">
                                         <div class="getfe_txt">
-                                            <h2>$60<span>/ Year</span></h2>
+                                            <h2>
+                                                <span style="font-size: 25px;">{{ env('CURRENCY') == 'BDT' ? '৳' : '$' }}</span>
+                                                {{ env('SUBSCRIPTION_PRICE') }} <span>/ Year</span>
+                                            </h2>
                                             <h3>Premium Plan</h3>
                                         </div>
                                         <div class="getfe_second">
                                             <ul>
                                                 <li>Create unlimited quizes</li>
                                             </ul>
-                                            <a href="#" class="button">Start Now</a>
+                                            <form action="{{ route('sslcommerz.pay') }}" method="post">
+                                                @csrf
+                                                <button type="submit" class="button">Start Now</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

@@ -29,7 +29,7 @@
                                 </ol> 
                             </nav>
                         </div>
-                        @if(auth()->user()->created_quiz_count < 5)
+                        @if(auth()->user()->created_quiz_count < config('quiz.quiz_count'))
                             <a href="{{route('admin.quizzes.create')}}" class="add-new">Create Quizzes<i class="ms-1 ri-add-line"></i></a>
                         @else
                             <a href="javascript:void(0)" 

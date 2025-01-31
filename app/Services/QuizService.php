@@ -10,6 +10,10 @@ class QuizService
 {
     public function storeQuiz(array $data)
     {
+        $quizCount = config('quiz.quiz_count');
+        if(auth()->user()->created_quiz_count >= $quizCount){
+            return back()->with('error', 'You have reached the maximum quiz limit.');
+        }
         $quiz = Quiz::create([
             'user_id' => auth()->id(),
             'title' => $data['title'],
