@@ -8,6 +8,15 @@ use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\QuizPlatformController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\SslCommerzPaymentController;
+
+
+
+// Route::get('/setup', function () {
+//     Artisan::call('storage:link');
+//     Artisan::call('key:generate');
+// })->name('setup');
 
 
 Route::get('/', [QuizPlatformController::class, 'index'])->name('frontend.home');
@@ -37,6 +46,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/quizzes/{quiz}/participants/{participant}', [AdminQuizController::class, 'showSingleParticipant'])->name('quizzes.single-participant');
         Route::put('/quizzes/{quiz}/participants/{participant}', [AdminQuizController::class, 'updateScore'])->name('quizzes.participant.update');
     });
+
+
+
+
+
+
+    
+    
+    // SSLCOMMERZ Start
+    Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
+    Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
+    
+    Route::post('/pay', [SslCommerzPaymentController::class, 'index'])->name('sslcommerz.pay');
+    Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax'])->name('sslcommerz.pay-via-ajax');
+    
+    Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+    Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+    Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+    
+    Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+    //SSLCOMMERZ END
+    
 
 });
 
