@@ -83,9 +83,16 @@
                     type: 'GET'
                 },
                 columns: [
-                    { data: 'id', name: 'id', orderable: true },
+                    {
+                        data: null,
+                        name: 'serial',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
                     { data: 'title', name: 'title', orderable: true },
-                    { data: 'description', name: 'description', orderable: true },
+                    { data: 'description', name: 'description', orderable: true, className: 'show-less' },
                     { data: 'start_time', name: 'start_time', orderable: true },
                     { data: 'end_time', name: 'end_time', orderable: true },
                     { data: 'user_id', name: 'user_id', orderable: true },
@@ -95,9 +102,11 @@
                         render: function(data) {
                             var btns = '<div class="action-btn">';
 
-                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/participants" title="View Participants" class="btn btn-participants">' +
-                                    '<i class="ri-user-3-line"></i></a>';
+                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/participants" title="View Participants" class="custom-button-primary-sm text-hover-white"><i class="ri-user-3-line"></i></a>';
 
+
+                            btns += '<span onclick="copyLink(' + data + ')" data-url="' + SITEURL + '/participant/' + data + '/edit" title="Share" class="btn btn-edit mx-2"><i class="ri-share-line"></i></span>';
+                            
                             btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/edit" title="Edit" class="btn btn-edit"><i class="ri-edit-line"></i></a>';
 
                             btns += '<form action="' + SITEURL + '/admin/quizzes/' + data +
@@ -114,5 +123,20 @@
                 order: [[0, 'asc']],
             });
         });
+
+
+        function copyLink(id) {
+            var url = SITEURL + '/participant/' + id ;
+            navigator.clipboard.writeText(url);
+            swal({
+                title: "Success!",
+                text: "Link copied to clipboard",
+                button: "OK",
+            });
+        }
+        
+
     </script>
+
+
 @endpush

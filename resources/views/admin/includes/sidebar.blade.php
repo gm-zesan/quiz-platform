@@ -1,6 +1,6 @@
 <div class="sidebar sidebar-navigation active">
     <div class="logo_content">
-        <a href="{{ route('dashboard') }}" class="logo">
+        <a href="/" class="logo">
             <img class="logo-icon" src="{{ asset('admin/images/logo.png') }}">
             <div class="logo_name">
                 <img style="max-height: 45px; width: 130px; object-fit: contain;"

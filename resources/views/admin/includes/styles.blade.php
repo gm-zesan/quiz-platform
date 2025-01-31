@@ -106,6 +106,64 @@
         color: #ff0000;
     }
 
+    .custom-button-primary{
+        background-color: #23b7e9;
+        color: #fff;
+        border: none;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        height: 32px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    .custom-button-primary:hover{
+        background-color: #2ba7f0;
+        color: #fff;
+        box-shadow: 0 0 5px #61bcf1;
+    }
+    .custom-button-primary:focus{
+        outline: none;
+        box-shadow: none;
+    }
+
+    .custom-button-secondary{
+        background-color: #1dcf7c;
+        color: #fff;
+        border: none;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        height: 32px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    .custom-button-secondary:hover{
+        background-color: #18bd70;
+        color: #fff;
+        box-shadow: 0 0 5px #6ce7ae;
+    }
+    .custom-button-secondary:focus{
+        outline: none;
+        box-shadow: none;
+    }
+
+    .custom-button-primary-sm {
+        font-size: 12px;
+        padding: 5px 10px;
+        border: 1px solid #008064;
+        color: #008064;
+        cursor: pointer;
+        transition: .1s all ease;
+        border-radius: 5px;
+    }
+    .custom-button-primary-sm:hover {
+        background-color: #008064;
+        color: #ffffff;
+        box-shadow: 0 0 10px 0 rgba(0, 128, 100, 0.3);
+    }
 
     .multi-select2 + .select2-container .select2-search__field::placeholder {
         font-size: 13px;

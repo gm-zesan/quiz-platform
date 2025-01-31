@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [QuizPlatformController::class, 'index'])->name('frontend.home');
 Route::get('/participant/{quiz}', [QuizPlatformController::class, 'participate'])->name('frontend.quizzes.participate');
+Route::get('/participant/{quiz}/{participant}/start', [QuizPlatformController::class, 'startQuiz'])->name('frontend.quizzes.start');
 Route::post('/participant/{quiz}/submit', [QuizPlatformController::class, 'storePatricipant'])->name('frontend.participant.submit');
 Route::post('/quizzes/{quiz}', [QuizPlatformController::class, 'storeQuiz'])->name('frontend.quizzes.submit');
 
@@ -33,6 +34,8 @@ Route::middleware('auth')->group(function () {
         
         Route::resource('quizzes', AdminQuizController::class);
         Route::get('/quizzes/{quiz}/participants', [AdminQuizController::class, 'showParticipants'])->name('quizzes.participants');
+        Route::get('/quizzes/{quiz}/participants/{participant}', [AdminQuizController::class, 'showSingleParticipant'])->name('quizzes.single-participant');
+        Route::put('/quizzes/{quiz}/participants/{participant}', [AdminQuizController::class, 'updateScore'])->name('quizzes.participant.update');
     });
 
 });
