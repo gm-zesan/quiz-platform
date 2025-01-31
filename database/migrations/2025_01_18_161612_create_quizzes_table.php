@@ -19,9 +19,8 @@ return new class extends Migration
             $table->boolean('is_public')->default(true);
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
-            $table->integer('timer')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
-            $table->integer('total_question')->default(0);
+            $table->time('timer')->nullable();
+            $table->integer('total_question');
             $table->timestamps();
         });
     }

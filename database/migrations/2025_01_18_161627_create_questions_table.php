@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('question_difficulty')->nullable();
             $table->integer('marks')->default(1);
             $table->string('type');
-            $table->boolean('is_multianswer')->default(false);
+            $table->integer('total_options')->nullable();
             $table->timestamps();
         });
     }

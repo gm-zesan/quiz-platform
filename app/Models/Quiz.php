@@ -9,8 +9,13 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'description', 'is_public', 'start_time', 'end_time', 'timer', 'price', 'total_question'];
+    protected $fillable = ['user_id', 'title', 'description', 'is_public', 'start_time', 'end_time', 'timer', 'total_question'];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+    
     public function user()
     {
         return $this->belongsTo(User::class);

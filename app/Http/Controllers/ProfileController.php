@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -24,17 +26,27 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+    public function myProfileUpdate(ProfileUpdateRequest $request): RedirectResponse{
+        $user = $request->user();
+        $user->fill($request->only('name', 'email', 'phone_no', 'image'));
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
+        if ($request->hasFile('image') && !empty($request->input('cover_image_data'))) {
+            $imagePath = $request->file('image')->store('all-users', 'public');
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
+            $user->image = $imagePath;
+        }
+        $user->save();
+        return Redirect::route('profile.edit')->with('success', 'Profile updated successfully.');
+    }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    public function changePassword()
+    {
+        return view('profile.change-password');
     }
 
     /**
@@ -56,5 +68,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function cacheClear(): RedirectResponse
+    {
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        return Redirect::back()->with('success', 'Cache cleared successfully.');
     }
 }

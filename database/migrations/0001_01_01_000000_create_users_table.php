@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('plan')->nullable();
+            $table->boolean('is_premium')->default(false);
             $table->integer('created_quiz_count')->default(0);
             $table->rememberToken();
             $table->timestamps();
