@@ -102,8 +102,7 @@
                         render: function(data) {
                             var btns = '<div class="action-btn">';
 
-                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/participants" title="View Participants" class="btn btn-participants">' +
-                                    '<i class="ri-user-3-line"></i></a>';
+                            btns += '<a href="' + SITEURL + '/admin/quizzes/' + data + '/participants" title="View Participants" class="custom-button-primary-sm text-hover-white"><i class="ri-user-3-line"></i></a>';
 
 
                             btns += '<span onclick="copyLink(' + data + ')" data-url="' + SITEURL + '/participant/' + data + '/edit" title="Share" class="btn btn-edit mx-2"><i class="ri-share-line"></i></span>';

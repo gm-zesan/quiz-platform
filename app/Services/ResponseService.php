@@ -21,6 +21,7 @@ class ResponseService
                 'participant_name' => auth()->check() ? auth()->user()->name : $name,
                 'email' => auth()->check() ? auth()->user()->email : $email,
                 'submitted_at' => now(),
+                'started_at' => now(),
             ]);
         }
 

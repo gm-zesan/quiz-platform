@@ -150,6 +150,20 @@
         box-shadow: none;
     }
 
+    .custom-button-primary-sm {
+        font-size: 12px;
+        padding: 5px 10px;
+        border: 1px solid #008064;
+        color: #008064;
+        cursor: pointer;
+        transition: .1s all ease;
+        border-radius: 5px;
+    }
+    .custom-button-primary-sm:hover {
+        background-color: #008064;
+        color: #ffffff;
+        box-shadow: 0 0 10px 0 rgba(0, 128, 100, 0.3);
+    }
 
     .multi-select2 + .select2-container .select2-search__field::placeholder {
         font-size: 13px;

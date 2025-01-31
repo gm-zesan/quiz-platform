@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\QuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Models\Quiz;
-use App\Models\Question;
-use App\Models\Option;
+use App\Models\Participant;
 use App\Services\QuizService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -193,8 +192,23 @@ class QuizController extends Controller
 
     public function showSingleParticipant($quizId, $participantId)
     {
+        $quiz = Quiz::with('questions.options')->findOrFail($quizId);
+        $participant = Participant::findOrFail($participantId);
+        $responses = Response::where('participant_id', $participantId)->get()->keyBy('question_id');
         
-        return view('admin.quizzes.single-perticipant');
+        return view('admin.quizzes.single-perticipant', compact('quiz', 'participant', 'responses'));
     }
+
+    // Update the participant's result
+    public function updateScore(Request $request, $quizId, $participantId)
+    {
+        $participant = Participant::where('id', $participantId)->where('quiz_id', $quizId)->first();
+        $participant->update(['score' => $request->score]);
+
+        return redirect()->route('admin.quizzes.single-participant', [$quizId, $participantId])
+            ->with('success', 'Participant result updated successfully.');
+    }
+
+
 
 }
